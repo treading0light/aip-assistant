@@ -25,7 +25,11 @@ const app = createApp({});
 
 // app.component('example-component', require('./components/ExampleComponent.vue').default);
 
-app.component('recipe', require('./components/Recipe.vue').default);
+app.component('recipelist', require('./components/RecipeList.vue').default);
+
+app.component('recipecardsmall', require('./components/RecipeCardSmall.vue').default);
+
+app.component('Button', require('./components/Button.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

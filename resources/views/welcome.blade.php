@@ -18,7 +18,7 @@
     <body>
 
         <div id="app" class="min-w-full min-h-full">
-            <Recipe></Recipe>
+            <RecipeList></RecipeList>
         </div>
 
         <script src="{{ asset('js/app.js') }}"></script>
