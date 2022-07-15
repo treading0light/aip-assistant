@@ -51,10 +51,16 @@ class RecipeController extends Controller
 
     }
 
-    public function getRecipe(Request $request, $id) {
+    public function getRecipe(Request $request, $id=null) {
+
+        if (!$id) {
+            $recipe = Recipe::all();
+        } else {
+            $recipe = Recipe::find($id);
+        }
 
         // $recipe = Recipe::find($request->id);
-        $recipe = Recipe::find($id);
+        
 
         // $jsonRecipe = $recipe->toJson();
 

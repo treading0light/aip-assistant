@@ -1,12 +1,13 @@
 <template>
-    <div class="flex flex-col justify-center items-center gap-10">
-        <h1 class="text-3xl">recipe list</h1>
+    <div class="min-h-full flex flex-col justify-center items-center gap-10 text-3xl bg-gray-200">
+        <!-- <h1 class="text-3xl">Recipe List</h1>
         <div class="min-w-full flex flex-col md:grid md:grid-cols-3 bg-gray-200">
 
             <RecipeCardSmall v-for="recipe in recipes" :id="recipe.id" :recipe="recipe" />
 
             
-        </div>
+        </div> -->
+        <new-recipe-form></new-recipe-form>
     </div>
     
     
@@ -14,11 +15,13 @@
 
 <script>
     import RecipeCardSmall from './RecipeCardSmall'
+    import NewRecipeForm from './NewRecipeForm'
 
     export default {
         name: 'RecipeList',
         components: {
-            RecipeCardSmall
+            RecipeCardSmall,
+            NewRecipeForm
         },
         props: {
             
@@ -27,25 +30,26 @@
         data() {
             return {
                 recipes: [],
+
             }
             
         },
 
-        created() {
-            this.recipes = [
-                    {   
-                        'id': 1,
-                        'name': 'hamburger',
-                        'photo': 'images/default-recipe-small.png'
-                    },
+        // created() {
+        //     this.fetchRecipes()
+        // },
 
-                    {   
-                        'id': 2,
-                        'name': 'hamburger',
-                        'photo': 'images/default-recipe-small.png'
-                    },
-                ]
-        },
+        // methods: {
+        //     async fetchRecipes() {
+        //         let url = './api/recipe'
+        //         let recipes = await fetch(url)
+        //         .then(res => res.json())
+        //         .then(res => this.recipes = res)
+        //         .catch(err => console.log(err))
+                
+        //         console.log(this.recipes)
+        //     }
+        // }
 
 
 

@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\IngredientController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +20,9 @@ use App\Http\Controllers\RecipeController;
 
 Route::get('/recipe/create', [RecipeController::class, 'create'])->name('recipe.create');
 
-Route::get('/recipe/{id}', [RecipeController::class, 'getRecipe'])->name('recipe.getRecipe');
+Route::get('/recipe/{id?}', [RecipeController::class, 'getRecipe'])->name('recipe.getRecipe');
+
+Route::get('/ingredients', [IngredientController::class, 'getIngredients'])->name('ingredient.getIngredients');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

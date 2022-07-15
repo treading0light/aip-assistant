@@ -29,7 +29,11 @@ app.component('recipelist', require('./components/RecipeList.vue').default);
 
 app.component('recipecardsmall', require('./components/RecipeCardSmall.vue').default);
 
-app.component('Button', require('./components/Button.vue').default);
+app.component('button', require('./components/Button.vue').default);
+
+app.component('ingredienttray', require('./components/IngredientTray.vue').default);
+
+app.component('newrecipeform', require('./components/NewRecipeForm.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
