@@ -1,16 +1,18 @@
 <template>
 
-	<input type="text" v-model="title" placeholder="title">
+	<input type="text" v-model="title" placeholder="title" class="input input-bordered input-primary w-full max-w-xs">
 
-	<input type="text" v-model="description" placeholder="description">
+	<input type="text" v-model="description" placeholder="description" class="input input-bordered input-primary w-full max-w-xs">
 
 	<div class="flex gap-5 mb-10">
 
-		<ingredient-tray :ingredients="dynamicIngredients"></ingredient-tray>
+		<ingredient-tray :ingredients="chosenIngredients"></ingredient-tray>
 
-		<input class="border-black text-center" type="text" @keyup.enter="addIngredient" v-model="newIngredient">
+		<ingredient-tray :ingredients="pantryIngredients" pantry ></ingredient-tray>
 
-		<button class="bg-gray-500 h-fit py-1 px-2 rounded self-center" @click="addIngredient">Add</button>
+		<input class="input input-bordered input-primary w-full max-w-xs" type="text" @keyup.enter="addIngredient" v-model="newIngredient">
+
+		<button class="btn btn-secondary btn-primary-focus" @click="addIngredient">Add</button>
 
 	</div>
 	
@@ -24,7 +26,7 @@
 			return {
 				title: '',
 				description: '',
-				dynamicIngredients: [
+				pantryIngredients: [
 					{
 						'id': 1,
 						'name': 'ground beef'
@@ -39,6 +41,8 @@
 					},
 				],
 				newIngredient: '',
+
+				chosenIngredients: [],
 
 			}
 		},
@@ -56,15 +60,24 @@
 				console.log(this.dynamicIngredients)
 			},
 
+			chooseIngredient: function (ingredient) {
+				this.chosenIngredients.push(ingredient)
+				this.pantryIngredients.remove(ingredient)
+			},
+
+			removeIngredient: function (ingredient) {
+				this.chosenIngredients.remove(ingredient)
+				this.pantryIngredients.push(ingredient)
+			},
+
 			fetchIngredients: async function () {
-				const response = {}
 
 				await fetch('./api/ingredients')
 				.then(res => res.json())
-				.then(json => response = json)
+				.then(json => this.dynamicIngredients = json)
 
-				console.log(response)
-			}
+				console.log(this.dynamicIngredients)
+			},
 
 		},
 

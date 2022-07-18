@@ -1,5 +1,6 @@
 <template>
-    <div class="min-h-full flex flex-col justify-center items-center gap-10 text-3xl bg-gray-200">
+    <div class="min-h-full flex flex-col justify-center items-center gap-10 text-3xl bg-base-300">
+        <header-nav></header-nav>
         <!-- <h1 class="text-3xl">Recipe List</h1>
         <div class="min-w-full flex flex-col md:grid md:grid-cols-3 bg-gray-200">
 
@@ -16,12 +17,14 @@
 <script>
     import RecipeCardSmall from './RecipeCardSmall'
     import NewRecipeForm from './NewRecipeForm'
+    import HeaderNav from './HeaderNav'
 
     export default {
         name: 'RecipeList',
         components: {
             RecipeCardSmall,
-            NewRecipeForm
+            NewRecipeForm,
+            HeaderNav
         },
         props: {
             
