@@ -37,6 +37,12 @@ app.component('newrecipeform', require('./components/NewRecipeForm.vue').default
 
 app.component('headernav', require('./components/HeaderNav.vue').default);
 
+app.component('pantry', require('./components/Pantry.vue').default);
+
+app.component('infomodal', require('./components/InfoModal.vue').default);
+
+
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
