@@ -22,6 +22,7 @@ data-theme="dark"
 
         <div id="app" class="min-w-full min-h-full">
             <RecipeList></RecipeList>
+
         </div>
 
         <script src="{{ asset('js/app.js') }}"></script>

@@ -1,5 +1,5 @@
 <template>
-	<div class="rounded overflow-x-auto">
+	<div class="relative rounded">
 		<h2 class="font-bold pb-3">Pantry:</h2>
 		<ul>
 			<li v-for="ingredient in ingredients" :key="ingredient.id" class="relative flex">
@@ -26,7 +26,7 @@
 
 		methods: {
 			choose: function (id) {
-				this.$emit('choose-ingredient', id)
+				this.$emit('ingredient-to-recipe', id)
 				console.log('Pantry choose by id: ' + id)
 			},
 		},
