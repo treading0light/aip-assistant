@@ -15,4 +15,23 @@ class IngredientController extends Controller
 
         return $json;
     }
+
+    public function create(Request $request) {
+
+        try {
+            $attributes = $request->validate([
+                'name' => ['required', 'max:25', 'unique:ingredients',],
+                'description' => ['nullable', 'max:255',]
+            ]);
+
+            $ingredient = Ingredient::create($attributes);
+
+            return $ingredient->toJson();
+
+
+        } catch (exception $e) {
+            $message = $e->getMessage();
+            return $mesage->toJson();
+        }
+    }
 }

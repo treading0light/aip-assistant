@@ -29,8 +29,6 @@ app.component('recipelist', require('./components/RecipeList.vue').default);
 
 app.component('recipecardsmall', require('./components/RecipeCardSmall.vue').default);
 
-app.component('button', require('./components/Button.vue').default);
-
 app.component('ingredienttray', require('./components/IngredientTray.vue').default);
 
 app.component('newrecipeform', require('./components/NewRecipeForm.vue').default);
@@ -40,6 +38,8 @@ app.component('headernav', require('./components/HeaderNav.vue').default);
 app.component('pantry', require('./components/Pantry.vue').default);
 
 app.component('infomodal', require('./components/InfoModal.vue').default);
+
+app.component('pictureinput', require('./components/PictureInput.vue').default);
 
 
 

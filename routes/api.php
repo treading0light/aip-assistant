@@ -22,7 +22,11 @@ Route::get('/recipe/create', [RecipeController::class, 'create'])->name('recipe.
 
 Route::get('/recipe/{id?}', [RecipeController::class, 'getRecipe'])->name('recipe.getRecipe');
 
-Route::get('/ingredients', [IngredientController::class, 'getIngredients'])->name('ingredient.getIngredients');
+Route::get('/ingredients', [IngredientController::class, 'getIngredients']
+)->name('ingredient.getIngredients');
+
+Route::post('/ingredients/create', [IngredientController::class, 'create']
+)->name('ingredient.create');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

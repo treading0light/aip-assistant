@@ -4,40 +4,47 @@
 
 	<input type="text" v-model="description" placeholder="description" class="input input-bordered input-primary w-full max-w-xs">
 
-	<div class="w-1/3">    
-    <picture-input 
-      ref="pictureInput" 
+	<picture-input 
+      width="300" 
+      height="300" 
       margin="16" 
       accept="image/jpeg,image/png" 
       size="10" 
       button-class="btn"
       :custom-strings="{
-        upload: '',
-        drag: ''
+        upload: '<h1>Bummer!</h1>',
+        drag: 'Click or drag photo here'
       }"
       @change="onChange">
     </picture-input>
-  </div>
 
 	<div class="w-full flex justify-around mb-10">
 
 		<ingredient-tray @ingredient-to-pantry="ingredientToPantry" :ingredients="computedChosenIngredients"></ingredient-tray>
 
-		<pantry @ingredient-to-recipe="ingredientToRecipe" :ingredients="computedPantryIngredients"></pantry>
+		<pantry @ingredient-to-recipe="ingredientToRecipe"
+		@create-ingredient-modal="createIngredientModal"
+		:ingredients="computedPantryIngredients"
+		></pantry>
 
 	</div>
 
 	<div class="w-1/4 flex flex-col items-center gap-5 mb-10">
 		<input class="input input-bordered input-primary w-full max-w-xs" type="text" @keyup.enter="addIngredient" v-model="newIngredient" placeholder="Create new">
 
-		<button class="btn btn-secondary btn-primary-focus" @click="addIngredient">Add</button>
+		<button class="btn btn-secondary btn-primary-focus max-w-xs" @click="addIngredient">Add</button>
 	</div>
+
+	<ingredient-modal v-if="ingredientModal" @ingredient-created="ingredientCreated"></ingredient-modal>
 	
 </template>
 
 <script>
 	import IngredientTray from './IngredientTray'
 	import Pantry from './Pantry.vue'
+	import IngredientModal from './IngredientModal'
+
+	import PictureInput from './PictureInput.vue'
 
 	export default {
 		data() {
@@ -61,6 +68,14 @@
 				newIngredient: '',
 
 				chosenIngredients: [],
+
+				image: null,
+
+				images: [],
+
+				searchText: null,
+
+				ingredientModal: false,
 			}
 		},
 
@@ -126,6 +141,26 @@
 				console.log(this.pantryIngredients)
 			},
 
+			createIngredientModal: function (search) {
+				this.searchText = search
+
+				this.ingredientModal = true
+			},
+
+			ingredientCreated: function (ingredient) {
+				this.pantryIngredients.unshift(ingredient)
+				this.ingredientModal = false
+			},
+
+			onChange: function (image) {
+		    	console.log('New picture selected!')
+		        if (image) {
+		        console.log('Picture loaded.')
+		        this.image = image
+		        } else {
+		        console.log('FileReader API not supported: use the <form>, Luke!')
+		      }
+		    },
 		},
 
 		mounted() {
@@ -135,7 +170,9 @@
 
 		components: {
 			IngredientTray,
-			Pantry
+			Pantry,
+			PictureInput,
+			IngredientModal
 		},
 	}
 	
