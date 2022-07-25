@@ -1,9 +1,11 @@
 <template>
 
-	<div tabindex="0" class="absolute h-1/3 w-1/2 card compact shadow bg-base-100 rounded-box w-64">
-		<button class="btn btn-circle absolute right-2 top-2">
-			  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-			</button>
+	<div tabindex="0" class="absolute h-1/3 w-1/2 card compact shadow bg-base-100 rounded-box w-64" id="modal">
+
+		<button @click="cancel" class="btn btn-circle absolute right-2 top-2">
+		  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+		</button>
+
 	    <div class="card-body relative m-auto max-w-1/4 h-1/4">
 
 	    	
@@ -60,7 +62,7 @@
 					body: JSON.stringify(this.ingredient)
 				})
 				.then(res => res.json())
-				.then(data => console.log('data: ' + data))
+				.then(data => JSON.parse(data))
 				.catch(error => console.log(error))
 
 				console.log('postIngredient ' + ingredient)
@@ -70,8 +72,20 @@
 				this.ingredient = {}
 
 				
-			}
+			},
+
+			cancel: function () {
+				this.ingredient = {}
+
+				this.$emit('cancel-ingredient')
+			},
 		}
 	}
 	
 </script>
+
+<style scoped>
+	#modal {
+		z-index: 10003;
+	}
+</style>

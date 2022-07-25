@@ -4,6 +4,8 @@
 
 	<input type="text" v-model="description" placeholder="description" class="input input-bordered input-primary w-full max-w-xs">
 
+	<input type="text" v-model="srcURL" placeholder="Source URL" class="input input-bordered input-primary w-full max-w-xs">
+
 	<picture-input 
       width="300" 
       height="300" 
@@ -29,13 +31,15 @@
 
 	</div>
 
-	<div class="w-1/4 flex flex-col items-center gap-5 mb-10">
-		<input class="input input-bordered input-primary w-full max-w-xs" type="text" @keyup.enter="addIngredient" v-model="newIngredient" placeholder="Create new">
-
-		<button class="btn btn-secondary btn-primary-focus max-w-xs" @click="addIngredient">Add</button>
+	<div>
+		<textarea class="textarea textarea-primary" cols="100" rows="10" placeholder="Directions"></textarea>
 	</div>
 
-	<ingredient-modal v-if="ingredientModal" @ingredient-created="ingredientCreated"></ingredient-modal>
+	<ingredient-modal
+	v-if="ingredientModal"
+	@ingredient-created="ingredientCreated"
+	@cancel-ingredient="cancelIngredient">	
+	</ingredient-modal>
 	
 </template>
 
@@ -149,6 +153,10 @@
 
 			ingredientCreated: function (ingredient) {
 				this.pantryIngredients.unshift(ingredient)
+				this.ingredientModal = false
+			},
+
+			cancelIngredient: function () {
 				this.ingredientModal = false
 			},
 
