@@ -18,9 +18,11 @@ use App\Http\Controllers\IngredientController;
 |
 */
 
-Route::get('/recipe/create', [RecipeController::class, 'create'])->name('recipe.create');
+Route::post('/recipe/create', [RecipeController::class, 'create'])->name('recipe.create');
 
 Route::get('/recipe/{id?}', [RecipeController::class, 'getRecipe'])->name('recipe.getRecipe');
+
+Route::get('/recipe/populate', [RecipeController::class, 'populate'])->name('recipe.populate');
 
 Route::get('/ingredients', [IngredientController::class, 'getIngredients']
 )->name('ingredient.getIngredients');

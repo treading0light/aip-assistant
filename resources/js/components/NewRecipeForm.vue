@@ -1,10 +1,10 @@
 <template>
 
-	<input type="text" v-model="title" placeholder="title" class="input input-bordered input-primary w-full max-w-xs">
+	<input type="text" v-model="title" placeholder="title" class="input input-bordered input-primary w-full max-w-xs text-2xl">
 
-	<input type="text" v-model="description" placeholder="description" class="input input-bordered input-primary w-full max-w-xs">
+	<input type="text" v-model="description" placeholder="description" class="input input-bordered input-primary w-full max-w-xs text-2xl">
 
-	<input type="text" v-model="srcURL" placeholder="Source URL" class="input input-bordered input-primary w-full max-w-xs">
+	<input type="text" v-model="srcURL" placeholder="Source URL" class="input input-bordered input-primary w-full max-w-xs text-2xl">
 
 	<picture-input 
       width="300" 
@@ -31,15 +31,30 @@
 
 	</div>
 
-	<div>
-		<textarea class="textarea textarea-primary" cols="100" rows="10" placeholder="Directions"></textarea>
+	<div class="w-1/2">
+		<textarea 
+		class="textarea textarea-primary w-full text-2xl" rows="10" 
+		placeholder="Directions"
+		v-model="directions"></textarea>
 	</div>
+
+	<button @click="postRecipe" class="btn btn-primary">Submit Recipe</button>
+
+	<button @click="testRequest" class="btn btn-primary">Test</button>
 
 	<ingredient-modal
 	v-if="ingredientModal"
 	@ingredient-created="ingredientCreated"
-	@cancel-ingredient="cancelIngredient">	
+	@cancel-ingredient="cancelIngredient"
+	:searchText="searchText">	
 	</ingredient-modal>
+
+	<div v-if="message" class="alert alert-success shadow-lg">
+	  <div>
+	    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+	    <span>{{ message }}</span>
+	  </div>
+	</div>
 	
 </template>
 
@@ -53,8 +68,15 @@
 	export default {
 		data() {
 			return {
+				// data to be used in creating new recipe
 				title: '',
 				description: '',
+				chosenIngredients: [],
+				image: null,
+				directions: '',
+				srcURL: '',
+
+				// component dependency data
 				pantryIngredients: [
 					{
 						'id': 1,
@@ -69,17 +91,14 @@
 						'name': 'cheese'
 					},
 				],
-				newIngredient: '',
-
-				chosenIngredients: [],
-
-				image: null,
-
-				images: [],
 
 				searchText: null,
 
 				ingredientModal: false,
+
+				message: null,
+
+				csrf: document.querySelector("meta[name='csrf-token']").getAttribute('content')
 			}
 		},
 
@@ -90,22 +109,14 @@
 
 			computedPantryIngredients() {
 				return this.pantryIngredients
+			},
+
+			computedMessage() {
+				return this.message
 			}
 		},
 
 		methods: {
-
-			addIngredient: function () {
-				let id = this.dynamicIngredients.length
-
-				this.dynamicIngredients.push({
-					'id': id,
-					'name': this.newIngredient
-				})
-
-				this.newIngredient = ''
-				console.log(this.dynamicIngredients)
-			},
 
 			ingredientToRecipe: function (id) {
 
@@ -169,6 +180,70 @@
 		        console.log('FileReader API not supported: use the <form>, Luke!')
 		      }
 		    },
+
+		    postRecipe: async function () {
+
+		    	// console.log('no json')
+		    	const recipe = {
+		    		'title': this.title,
+		    		'description': this.description,
+		    		'image': this.image,
+		    		'directions': this.directions,
+		    		'ingredients': this.getReqIngredients()
+		    	}
+
+		    	console.log(this.csrf)
+
+		    	const response = await fetch('./api/recipe/create', {
+
+					method: 'POST',
+
+					headers: {
+						'Content-Type': 'application/json',
+						 'Accept': 'application/json',
+						'X-CSRF-Token': this.csrf
+					},
+
+					body: JSON.stringify(recipe)
+				})
+				.then(res => res.json())
+				.catch(error => console.error('error: ' + error))
+
+				// console.log(message)
+
+				// const message = await response.json()
+				
+				console.log(response)
+
+				
+		    },
+
+		    getReqIngredients: function () {
+		    	return this.chosenIngredients.map(i => {
+
+		    		return {
+		    			id: i.id,
+		    			qty: i.qty,
+		    			unit: i.unit
+		    		}
+	    		})
+		    },
+
+		    testRequest: function () {
+		    	const recipe = {
+		    		'title': this.title,
+		    		'description': this.description,
+		    		'image': this.image,
+		    		'directions': this.directions,
+		    		'ingredients': this.getReqIngredients()
+		    	}
+
+		    	console.log('test request: ' + JSON.stringify(recipe))
+		    },
+
+		    alert: function () {
+		    	alert('no json')
+		    }
 		},
 
 		mounted() {

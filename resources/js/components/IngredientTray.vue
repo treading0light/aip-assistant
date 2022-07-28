@@ -14,7 +14,12 @@
 
 				<info-modal v-if="ingredient.description" :title="ingredient.name" :info="ingredient.description" ></info-modal>
 
-				<input type="text" placeholder="Qty" v-model="ingredient.qty" class="input input-bordered w-1/3 text-2xl">
+				<input type="text" placeholder="Qty" v-model="ingredient.qty" class="input input-bordered w-1/6 text-2xl">
+
+				<select class="select select-primary max-w-xs" v-model="ingredient.unit">
+				    <option disabled selected>Unit</option>
+				    <option v-for="unit in units">{{ unit }}</option>
+				</select>
 			</li>
 
 		</ul>
@@ -28,6 +33,18 @@
 	export default {
 		props: {
 			ingredients: Array,
+		},
+
+		data() {
+			return {
+				units: [
+					'cups',
+					'tbsp',
+					'tsp',
+					'lbs',
+
+				],
+			}
 		},
 		
 		methods: {

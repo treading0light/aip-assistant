@@ -8,7 +8,6 @@
 			<li v-for="ingredient in shownIngredients" :key="ingredient.id" class="relative flex">
 
 				<p class="hover:cursor-pointer" @click="choose(ingredient.id)">{{ ingredient.name }}
-					{{ ingredient.id }}
 				</p>
  
 				<info-modal v-if="ingredient.description" :title="ingredient.name" :info="ingredient.description" ></info-modal>
@@ -78,12 +77,15 @@
 
 			triggerIngredientModal: function () {
 				const search = this.ingredientSearch
+
+				this.ingredientSearch = ''
+				
 				this.$emit('create-ingredient-modal', search)
 			}
 		},
 
 		mounted() {
-			// this.originalIngredients = this.ingredients
+			this.originalIngredients = this.ingredients
 		},
 
 		components: {

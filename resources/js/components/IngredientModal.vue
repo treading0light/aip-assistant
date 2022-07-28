@@ -51,7 +51,7 @@
 				let url = './api/ingredients/create'
 
 
-				const ingredient = await fetch(url, {
+				const response = await fetch(url, {
 
 					method: 'POST',
 
@@ -61,11 +61,11 @@
 
 					body: JSON.stringify(this.ingredient)
 				})
-				.then(res => res.json())
-				.then(data => JSON.parse(data))
-				.catch(error => console.log(error))
+				.catch(error => console.log('error: ' + error))
 
-				console.log('postIngredient ' + ingredient)
+				const ingredient = await response.json()
+
+				console.log('postIngredient ' + ingredient.name)
 				
 				this.$emit('ingredient-created', ingredient)
 
@@ -79,7 +79,11 @@
 
 				this.$emit('cancel-ingredient')
 			},
-		}
+		},
+
+		mounted() {
+			this.ingredient.name = this.searchText
+		},
 	}
 	
 </script>

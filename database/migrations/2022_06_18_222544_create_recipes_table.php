@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('recipes', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('title');
             $table->string('description')->nullable();
-            $table->string('photo')->default('images/default-recipe-big.png');
+            $table->string('image')->default('images/default-recipe-big.png');
             $table->string('directions')->nullable();
             $table->foreignId('category_id')->nullable();
             $table->timestamps();

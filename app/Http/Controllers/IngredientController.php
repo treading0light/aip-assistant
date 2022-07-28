@@ -31,7 +31,7 @@ class IngredientController extends Controller
 
         } catch (exception $e) {
             $message = $e->getMessage();
-            return $mesage->toJson();
+            return $mesage;
         }
     }
 }

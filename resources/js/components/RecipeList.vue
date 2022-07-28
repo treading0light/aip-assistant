@@ -1,30 +1,20 @@
 <template>
-    <div class="min-h-full flex flex-col justify-center items-center gap-10 text-3xl bg-base-300">
-        <header-nav></header-nav>
-        <!-- <h1 class="text-3xl">Recipe List</h1>
-        <div class="min-w-full flex flex-col md:grid md:grid-cols-3 bg-gray-200">
-
-            <RecipeCardSmall v-for="recipe in recipes" :id="recipe.id" :recipe="recipe" />
-
+        <h1 class="text-3xl">Recipe List</h1>
+        <div class="w-10/12 flex flex-col items-center md:grid md:grid-cols-3 gap-y-5 place-items-center">
             
-        </div> -->
-        <new-recipe-form></new-recipe-form>
-    </div>
+            <RecipeCardSmall v-for="recipe in recipes" :id="recipe.id" :recipe="recipe" />         
+        </div>
     
     
 </template>
 
 <script>
     import RecipeCardSmall from './RecipeCardSmall'
-    import NewRecipeForm from './NewRecipeForm'
-    import HeaderNav from './HeaderNav'
 
     export default {
-        name: 'RecipeList',
+
         components: {
             RecipeCardSmall,
-            NewRecipeForm,
-            HeaderNav
         },
         props: {
             
@@ -38,21 +28,21 @@
             
         },
 
-        // created() {
-        //     this.fetchRecipes()
-        // },
+        created() {
+            this.fetchRecipes()
+        },
 
-        // methods: {
-        //     async fetchRecipes() {
-        //         let url = './api/recipe'
-        //         let recipes = await fetch(url)
-        //         .then(res => res.json())
-        //         .then(res => this.recipes = res)
-        //         .catch(err => console.log(err))
+        methods: {
+            async fetchRecipes() {
+                let url = './api/recipe'
+                let recipes = await fetch(url)
+                .then(res => res.json())
+                .then(res => this.recipes = res)
+                .catch(err => console.log(err))
                 
-        //         console.log(this.recipes)
-        //     }
-        // }
+                console.log(this.recipes)
+            }
+        }
 
 
 

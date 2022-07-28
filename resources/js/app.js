@@ -25,6 +25,8 @@ const app = createApp({});
 
 // app.component('example-component', require('./components/ExampleComponent.vue').default);
 
+app.component('app', require('./components/App.vue').default);
+
 app.component('recipelist', require('./components/RecipeList.vue').default);
 
 app.component('recipecardsmall', require('./components/RecipeCardSmall.vue').default);
