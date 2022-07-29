@@ -37,7 +37,7 @@
 		},
 
 		created() {
-			console.log(this.recipe)
+			// console.log(this.recipe)
 		}
 
 

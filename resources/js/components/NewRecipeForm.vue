@@ -1,5 +1,9 @@
 <template>
 
+	<div class="absolute right-1 left-1">
+		<button class="btn btn-primary">Reset Form</button>
+	</div>
+
 	<input type="text" v-model="title" placeholder="title" class="input input-bordered input-primary w-full max-w-xs text-2xl">
 
 	<input type="text" v-model="description" placeholder="description" class="input input-bordered input-primary w-full max-w-xs text-2xl">
@@ -69,6 +73,7 @@
 		data() {
 			return {
 				// data to be used in creating new recipe
+				
 				title: '',
 				description: '',
 				chosenIngredients: [],
@@ -153,7 +158,7 @@
 				.then(res => res.json())
 				.then(json => this.pantryIngredients = json)
 
-				console.log(this.pantryIngredients)
+				// console.log(this.pantryIngredients)
 			},
 
 			createIngredientModal: function (search) {

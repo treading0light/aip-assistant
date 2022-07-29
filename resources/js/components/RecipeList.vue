@@ -40,7 +40,7 @@
                 .then(res => this.recipes = res)
                 .catch(err => console.log(err))
                 
-                console.log(this.recipes)
+                // console.log(this.recipes)
             }
         }
 

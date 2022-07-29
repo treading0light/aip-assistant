@@ -113,7 +113,10 @@ class RecipeController extends Controller
 
         $imageName = time().'.'.$request->file('image')->getClientOriginalName();
 
-        $image = $request->file('image')->move('images/', $imageName);
+        $image = $request->file('image')->move(public_path('images'), $imageName);
+
+        $recipe->image = $image;
+        $recipe->save();
 
 
 

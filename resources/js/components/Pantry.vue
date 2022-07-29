@@ -93,7 +93,7 @@
 		},
 
 		mounted() {
-			console.log('pantry array: ' + this.ingredients)
+			// console.log('pantry array: ' + this.ingredients)
 		},
 	}
 </script>

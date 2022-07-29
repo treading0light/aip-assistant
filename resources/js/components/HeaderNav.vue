@@ -6,7 +6,7 @@
   <div class="flex justify-end flex-1 px-2">
     <div class="flex items-stretch">
 
-      <a class="btn btn-ghost rounded-btn text-primary-content">Home</a>
+      <a @click="toHome" class="btn btn-ghost rounded-btn text-primary-content">Home</a>
 
       <div id="dropdown" class="dropdown dropdown-end">
         <label tabindex="0" class="btn btn-ghost rounded-btn text-primary-content"
@@ -36,6 +36,10 @@
       toCreate: function () {
         this.$emit('change-location', 'new-recipe')
         this.toggleDropdown()
+      },
+
+      toHome: function () {
+        this.$emit('change-location', 'home')
       },
 
       toggleDropdown: function () {

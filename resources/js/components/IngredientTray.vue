@@ -16,10 +16,7 @@
 
 				<input type="text" placeholder="Qty" v-model="ingredient.qty" class="input input-bordered w-1/6 text-2xl">
 
-				<select class="select select-primary max-w-xs" v-model="ingredient.unit">
-				    <option disabled selected>Unit</option>
-				    <option v-for="unit in units">{{ unit }}</option>
-				</select>
+				<input type="text" placeholder="Unit" v-model="ingredient.unit" class="input input-bordered w-1/6 text-2xl">
 			</li>
 
 		</ul>
@@ -37,13 +34,7 @@
 
 		data() {
 			return {
-				units: [
-					'cups',
-					'tbsp',
-					'tsp',
-					'lbs',
-
-				],
+				
 			}
 		},
 		
