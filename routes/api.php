@@ -20,6 +20,8 @@ use App\Http\Controllers\IngredientController;
 
 Route::post('/recipe/create', [RecipeController::class, 'create'])->name('recipe.create');
 
+Route::post('/image/create', [RecipeController::class, 'createImage'])->name('image.create');
+
 Route::get('/recipe/{id?}', [RecipeController::class, 'getRecipe'])->name('recipe.getRecipe');
 
 Route::get('/recipe/populate', [RecipeController::class, 'populate'])->name('recipe.populate');

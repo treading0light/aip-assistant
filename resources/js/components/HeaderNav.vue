@@ -12,7 +12,7 @@
         <label tabindex="0" class="btn btn-ghost rounded-btn text-primary-content"
         >Recipes</label>
         <ul tabindex="0" class="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-52 mt-4 text-base">
-          <li @click="toList"><a>View All</a></li> 
+          <li @click="toList"><a>View All</a></li>
           <li @click="toCreate"><a>Make New</a></li>
         </ul>
       </div>

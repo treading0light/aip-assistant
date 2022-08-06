@@ -19975,27 +19975,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       if (image) {
         console.log('Picture loaded.');
         this.image = image;
+        console.log(this.image);
       } else {
         console.log('FileReader API not supported: use the <form>, Luke!');
       }
     },
     postRecipe: function () {
       var _postRecipe = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var recipe, response;
+        var data, id;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                // console.log('no json')
-                recipe = {
+                console.log(this.title);
+                data = {
                   'title': this.title,
                   'description': this.description,
-                  'image': this.image,
                   'directions': this.directions,
                   'ingredients': this.getReqIngredients()
                 };
-                console.log(this.csrf);
-                _context2.next = 4;
+                console.log(JSON.stringify(data));
+                _context2.next = 5;
                 return fetch('./api/recipe/create', {
                   method: 'POST',
                   headers: {
@@ -20003,20 +20003,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     'Accept': 'application/json',
                     'X-CSRF-Token': this.csrf
                   },
-                  body: JSON.stringify(recipe)
+                  body: JSON.stringify(data)
                 }).then(function (res) {
                   return res.json();
                 })["catch"](function (error) {
                   return console.error('error: ' + error);
                 });
 
-              case 4:
-                response = _context2.sent;
-                // console.log(message)
-                // const message = await response.json()
-                console.log(response);
+              case 5:
+                id = _context2.sent;
+                console.log(id);
 
-              case 6:
+                if (!this.image) {
+                  _context2.next = 12;
+                  break;
+                }
+
+                _context2.next = 10;
+                return this.postRecipeImage(id);
+
+              case 10:
+                _context2.next = 13;
+                break;
+
+              case 12:
+                console.log('no image chosen');
+
+              case 13:
               case "end":
                 return _context2.stop();
             }
@@ -20030,6 +20043,105 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return postRecipe;
     }(),
+    postRecipeImage: function () {
+      var _postRecipeImage = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(id) {
+        var data, response;
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                data = new FormData();
+                data.append('image', this.image);
+                data.append('id', id); // console.log(data.get('image'))
+
+                _context3.next = 5;
+                return fetch('./api/image/create', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Accept': 'application/json',
+                    'X-CSRF-Token': this.csrf
+                  },
+                  body: data
+                }).then(function (res) {
+                  return res.json();
+                })["catch"](function (error) {
+                  return console.error('error: ' + error);
+                });
+
+              case 5:
+                response = _context3.sent;
+                console.log(response.message);
+
+              case 7:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function postRecipeImage(_x) {
+        return _postRecipeImage.apply(this, arguments);
+      }
+
+      return postRecipeImage;
+    }(),
+    postSend: function () {
+      var _postSend = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(data) {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return fetch('./api/recipe/create/image', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-Token': this.csrf
+                  },
+                  body: JSON.stringify(data)
+                }).then(function (res) {
+                  return res.json();
+                })["catch"](function (error) {
+                  return console.error('error: ' + error);
+                });
+
+              case 2:
+                response = _context4.sent;
+                // console.log(message)
+                // const message = await response.json()
+                console.log(response.message); // return response.message
+
+              case 4:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function postSend(_x2) {
+        return _postSend.apply(this, arguments);
+      }
+
+      return postSend;
+    }(),
+    buildForm: function buildForm() {
+      var data = new FormData();
+      data.append('title', this.title);
+      data.append('description', this.description);
+      data.append('directions', this.directions);
+      data.append('ingredients', this.getReqIngredients());
+
+      if (this.image) {
+        data.append('image', this.image);
+      }
+
+      return data;
+    },
     getReqIngredients: function getReqIngredients() {
       return this.chosenIngredients.map(function (i) {
         return {
@@ -20046,8 +20158,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         'image': this.image,
         'directions': this.directions,
         'ingredients': this.getReqIngredients()
-      };
-      console.log('test request: ' + JSON.stringify(recipe));
+      }; // const recipe = this.buildForm()
+
+      console.log('test request: ', recipe.image);
     },
     alert: function (_alert) {
       function alert() {
@@ -21404,6 +21517,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, null, 512
   /* NEED_PATCH */
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.srcURL]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_picture_input, {
+    ref: "pictureInput",
     width: "300",
     height: "300",
     margin: "16",
@@ -21417,7 +21531,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onChange: $options.onChange
   }, null, 8
   /* PROPS */
-  , ["onChange"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ingredient_tray, {
+  , ["onChange"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <input type=\"file\" v-model=\"image\"> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ingredient_tray, {
     onIngredientToPantry: $options.ingredientToPantry,
     ingredients: $options.computedChosenIngredients
   }, null, 8
@@ -21443,8 +21557,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     "class": "btn btn-primary"
   }, "Submit Recipe"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    onClick: _cache[5] || (_cache[5] = function () {
-      return $options.testRequest && $options.testRequest.apply($options, arguments);
+    onClick: _cache[5] || (_cache[5] = function ($event) {
+      return $options.postRecipeImage(45);
     }),
     "class": "btn btn-primary"
   }, "Test"), $data.ingredientModal ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ingredient_modal, {
