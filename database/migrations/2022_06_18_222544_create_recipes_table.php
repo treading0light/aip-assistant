@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('description')->nullable();
             $table->string('image')->default('app-images/default-recipe-big.png');
-            $table->string('directions')->nullable();
+            $table->text('directions')->nullable();
             $table->foreignId('category_id')->nullable();
             $table->timestamps();
         });
