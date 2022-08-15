@@ -11,7 +11,7 @@
 	<input type="text" v-model="srcURL" placeholder="Source URL" class="input input-bordered input-primary w-full max-w-xs text-2xl">
 
 	<picture-input
-	  ref="pictureInput"
+		  ref="pictureInput"
       width="300" 
       height="300" 
       margin="16" 
@@ -24,8 +24,6 @@
       }"
       @change="onChange">
     </picture-input>
-
-    <!-- <input type="file" v-model="image"> -->
 
 	<div class="w-full flex justify-around mb-10">
 
@@ -47,7 +45,7 @@
 
 	<button @click="postRecipe" class="btn btn-primary">Submit Recipe</button>
 
-	<button @click="postRecipeImage(45)" class="btn btn-primary">Test</button>
+	<button @click="testRequest" class="btn btn-primary">Test</button>
 
 	<ingredient-modal
 	v-if="ingredientModal"
@@ -130,6 +128,9 @@
 
 				const ingredient = this.pantryIngredients.filter(obj => obj.id == id)
 
+				// ingredient[0].qty = 0
+				// ingredient[0].unit = 'Unit'
+
 				this.removeIngredient(id, this.pantryIngredients)
 
 				this.chosenIngredients.push(ingredient[0])
@@ -156,6 +157,7 @@
 			},
 
 			fetchIngredients: async function () {
+				// populate pantry with ingredients from DB
 
 				await fetch('./api/ingredients')
 				.then(res => res.json())
@@ -165,11 +167,15 @@
 			},
 
 			createIngredientModal: function (search) {
+				// render modal for new ingredients
+
 				this.searchText = search
 				this.ingredientModal = true
 			},
 
 			ingredientCreated: function (ingredient) {
+				// add created ingredient to pantry and remove modal
+
 				this.pantryIngredients.unshift(ingredient)
 				this.ingredientModal = false
 			},
@@ -179,107 +185,41 @@
 			},
 
 			onChange: function (image) {
-		    	console.log('New picture selected!')
-		        if (image) {
-		        console.log('Picture loaded.')
-		        this.image = image
+				// runs when picture-input value changes
 
-		       	console.log(this.image)
-		        } else {
-		        console.log('FileReader API not supported: use the <form>, Luke!')
-		      }
-		    },
+	    	console.log('New picture selected!')
+	        if (image) {
 
-		    postRecipe: async function () {
+	        console.log('Picture loaded.')
 
-		    	console.log(this.title)
+	        this.image = this.$refs.pictureInput.file
 
-		    	const data = {
-		    		'title': this.title,
-		    		'description': this.description,
-		    		'directions': this.directions,
-		    		'ingredients': this.getReqIngredients()
-		    	}
+	        } else {
+	        console.log('FileReader API not supported: use the <form>, Luke!')
+	      }
+	    },
 
-		    	console.log(JSON.stringify(data))
+	    postRecipe: async function () {
+	    	// including 'Content-Type' breaks the POST request
 
-		    	const id = await fetch('./api/recipe/create', {
+	    	const data = await this.buildForm()
 
-					method: 'POST',
+	    	const response = await fetch('./api/recipe/create', {
 
-					headers: {
-						'Content-Type': 'application/json',
-						 'Accept': 'application/json',
-						'X-CSRF-Token': this.csrf
-					},
+				method: 'POST',
 
-					body: JSON.stringify(data)
+				headers: {
+				  'Accept': 'application/json',
+					'X-CSRF-Token': this.csrf
+				},
+
+				body: data
+
 				})
 				.then(res => res.json())
 				.catch(error => console.error('error: ' + error))
 				
-				console.log(id)
-
-		    	if (this.image) {
-		    		await this.postRecipeImage(id)
-		    	} else {
-		    		console.log('no image chosen')
-		    	}	
-		    },
-
-		    postRecipeImage: async function (id) {
-
-		    	const data = new FormData() 
-
-		    	data.append('image', this.image)
-
-		    	data.append('id', id)
-
-		    	// console.log(data.get('image'))
-
-		    	const response = await fetch('./api/image/create', {
-
-					method: 'POST',
-
-					headers: {
-						'Content-Type': 'multipart/form-data',
-						'Accept': 'application/json',
-						'X-CSRF-Token': this.csrf
-					},
-
-					body: data
-				})
-				.then(res => res.json())
-				.catch(error => console.error('error: ' + error))
-
-				console.log(response.message)
-
-		    },
-
-		    postSend: async function (data) {
-
-		    	const response = await fetch('./api/recipe/create/image', {
-
-					method: 'POST',
-
-					headers: {
-						'Content-Type': 'application/json',
-						'Accept': 'application/json',
-						'X-CSRF-Token': this.csrf
-					},
-
-					body: JSON.stringify(data)
-				})
-				.then(res => res.json())
-				.catch(error => console.error('error: ' + error))
-
-				// console.log(message)
-
-				// const message = await response.json()
-				
-				console.log(response.message)
-
-				// return response.message
+				console.log(response)
 		    },
 
 		    buildForm: function () {
@@ -289,7 +229,16 @@
 		    	data.append('title', this.title)
 		    	data.append('description', this.description)
 		    	data.append('directions', this.directions)
-		    	data.append('ingredients', this.getReqIngredients())
+
+		    	const ingredients = this.getReqIngredients()
+
+		    	console.log('ingredients: ' + JSON.stringify(ingredients))
+
+		    	for (var i = ingredients.length - 1; i >= 0; i--) {
+		    		console.log('adding ' + JSON.stringify(ingredients[i]))
+		    		
+		    		data.append('ingredients[]', JSON.stringify(ingredients[i]))
+		    	}
 
 		    	if (this.image) {
 		    		data.append('image', this.image)
@@ -299,8 +248,18 @@
 		    },
 
 		    getReqIngredients: function () {
+		    	// map ingredient ids with pivot table attributes
 
 		    	return this.chosenIngredients.map(i => {
+
+		    		// set some default values
+		    		if (!i.qty) {
+		    			i.qty = 0
+		    		}
+
+		    		if (!i.unit) {
+		    			i.unit = 'N/A'
+		    		}
 
 		    		return {
 		    			id: i.id,
@@ -311,22 +270,12 @@
 		    },
 
 		    testRequest: function () {
-		    	const recipe = {
-		    		'title': this.title,
-		    		'description': this.description,
-		    		'image': this.image,
-		    		'directions': this.directions,
-		    		'ingredients': this.getReqIngredients()
-		    	}
 
-		    	// const recipe = this.buildForm()
+		    	const recipe = this.buildForm()
 
-		    	console.log('test request: ', recipe.image)
+		    	console.log('test request: ', recipe.ingredients)
+		    	console.log('test request: ', JSON.stringify(recipe))
 		    },
-
-		    alert: function () {
-		    	alert('no json')
-		    }
 		},
 
 		mounted() {

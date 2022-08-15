@@ -13,8 +13,7 @@
 	    	<h2 class="card-title">Create New Ingredient</h2>
 
 	    	<p>Name:</p>
-	        <input type="text" v-model="ingredient.name" class="input input-bordered input-primary"
-	        value="{{ searchText }}">
+	        <input type="text" v-model="ingredient.name" class="input input-bordered input-primary">
 	        <p>Details:</p>
 		    <textarea class="textarea textarea-bordered textarea-primary" v-model="ingredient.description" placeholder="Optional"> 
 	    	</textarea>

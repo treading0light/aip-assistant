@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\Recipe;
 use App\Models\Step;
@@ -22,21 +23,35 @@ class RecipeController extends Controller
             $attributes = $request->validate([
                 'title' => ['required', 'max:25', 'unique:recipes'],
                 'description' => ['nullable', 'max:255'],
-                'directions' => ['required']
+                'directions' => ['required'],
             ]);
+
+            
+
+            // dd($request);
 
             $recipe = Recipe::create($attributes);
 
-            foreach ($request['ingredients'] as $i) {
-                $ingredient = Ingredient::find($i['id']);
-                // define relationship of each ingredient by adding them to their pivot table
-                // $recipe->ingredients()->attach($ingredient, ['qty' => $i->qty, 'unit' => $i->unit]);
-                $recipe->ingredients()->attach($ingredient, ['qty' => 5, 'unit' => 'cups']);
+            if ($request->hasFile('image')) {
+                $this->createImage($request->file('image'), $recipe);
             };
 
-            $message = 'success';
+            $ingredients = $request['ingredients'];
 
-            return json_encode($recipe->id);
+            // return $ingredients;
+
+            foreach ($ingredients as $i) {
+
+                $ing = json_decode($i);
+                $ingredient = Ingredient::find($ing->id);
+
+                // define relationship of each ingredient by adding them to their pivot table
+                $recipe->ingredients()->attach($ingredient, ['qty' => $ing->qty, 'unit' => $ing->unit]);
+            };
+
+            $message = 'success: ' . $recipe->id;
+
+            return json_encode($message);
 
         } catch (Throwable $e) {
 
@@ -46,32 +61,17 @@ class RecipeController extends Controller
         }
     }
 
-    public function createImage(Request $request) {
-        try {
+    public function createImage($file, $recipe) {
 
-            $file = $request->file('image');
-            $recipe = Recipe::find($request['id']);
+            
+        $imageName = time() . '.' . $recipe->name . '.' . $file->extension();
 
-            $response['message'] = $recipe->name;
+        $path = $file->move(public_path('images'), $imageName);
 
-            return json_encode($response);
+        $recipe->image = 'images/' . $imageName;
 
-            $imageName = time() . '.' . $recipe->name;
+        $recipe->save();
 
-            $path = $file->storeAs(public_path('images'), $imageName);
-
-            $recipe->image = $path;
-            $recipe->save();
-
-            $response['message'] = 'createImage success';
-
-            return json_encode($response);
-
-        } catch (Exception $e) {
-            $response['message'] = $e->getMessage();
-
-            return json_encode($response);
-        }
     }
 
     public function getRecipe(Request $request, $id=null) {
@@ -120,30 +120,6 @@ class RecipeController extends Controller
         };
 
         print_r($recipe);
-
-    }
-
-    function saveRecipeImage(Request $request, $id) {
-
-        try {
-            $imageName = time().'.'.$request->image->file('image')->getClientOriginalName();
-
-            $image = $request->image->file('image')->move(public_path('images'), $imageName);
-
-            // return json_encode($image->name);
-
-            $recipe->image = public_path('images').$imageName;
-            $recipe->save();
-        } catch (Exception $e) {
-            $message = 'saveRecipeImage Error: '.$e->getMessage();
-
-            return json_encode($message);
-        }
-
-       
-
-
-
 
     }
 }

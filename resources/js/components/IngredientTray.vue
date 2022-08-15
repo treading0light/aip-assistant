@@ -14,7 +14,7 @@
 
 				<info-modal v-if="ingredient.description" :title="ingredient.name" :info="ingredient.description" ></info-modal>
 
-				<input type="text" placeholder="Qty" v-model="ingredient.qty" class="input input-bordered w-1/6 text-2xl">
+				<input type="number" placeholder="Qty" v-model="ingredient.qty" class="input input-bordered w-1/6 text-2xl">
 
 				<input type="text" placeholder="Unit" v-model="ingredient.unit" class="input input-bordered w-1/6 text-2xl">
 			</li>

@@ -19910,7 +19910,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     ingredientToRecipe: function ingredientToRecipe(id) {
       var ingredient = this.pantryIngredients.filter(function (obj) {
         return obj.id == id;
-      });
+      }); // ingredient[0].qty = 0
+      // ingredient[0].unit = 'Unit'
+
       this.removeIngredient(id, this.pantryIngredients);
       this.chosenIngredients.push(ingredient[0]);
       console.log('choose ingredient: ' + ingredient[0]);
@@ -19959,10 +19961,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return fetchIngredients;
     }(),
     createIngredientModal: function createIngredientModal(search) {
+      // render modal for new ingredients
       this.searchText = search;
       this.ingredientModal = true;
     },
     ingredientCreated: function ingredientCreated(ingredient) {
+      // add created ingredient to pantry and remove modal
       this.pantryIngredients.unshift(ingredient);
       this.ingredientModal = false;
     },
@@ -19970,40 +19974,36 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.ingredientModal = false;
     },
     onChange: function onChange(image) {
+      // runs when picture-input value changes
       console.log('New picture selected!');
 
       if (image) {
         console.log('Picture loaded.');
-        this.image = image;
-        console.log(this.image);
+        this.image = this.$refs.pictureInput.file;
       } else {
         console.log('FileReader API not supported: use the <form>, Luke!');
       }
     },
     postRecipe: function () {
       var _postRecipe = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var data, id;
+        var data, response;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                console.log(this.title);
-                data = {
-                  'title': this.title,
-                  'description': this.description,
-                  'directions': this.directions,
-                  'ingredients': this.getReqIngredients()
-                };
-                console.log(JSON.stringify(data));
+                _context2.next = 2;
+                return this.buildForm();
+
+              case 2:
+                data = _context2.sent;
                 _context2.next = 5;
                 return fetch('./api/recipe/create', {
                   method: 'POST',
                   headers: {
-                    'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'X-CSRF-Token': this.csrf
                   },
-                  body: JSON.stringify(data)
+                  body: data
                 }).then(function (res) {
                   return res.json();
                 })["catch"](function (error) {
@@ -20011,25 +20011,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
               case 5:
-                id = _context2.sent;
-                console.log(id);
+                response = _context2.sent;
+                console.log(response);
 
-                if (!this.image) {
-                  _context2.next = 12;
-                  break;
-                }
-
-                _context2.next = 10;
-                return this.postRecipeImage(id);
-
-              case 10:
-                _context2.next = 13;
-                break;
-
-              case 12:
-                console.log('no image chosen');
-
-              case 13:
+              case 7:
               case "end":
                 return _context2.stop();
             }
@@ -20043,98 +20028,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return postRecipe;
     }(),
-    postRecipeImage: function () {
-      var _postRecipeImage = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(id) {
-        var data, response;
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                data = new FormData();
-                data.append('image', this.image);
-                data.append('id', id); // console.log(data.get('image'))
-
-                _context3.next = 5;
-                return fetch('./api/image/create', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Accept': 'application/json',
-                    'X-CSRF-Token': this.csrf
-                  },
-                  body: data
-                }).then(function (res) {
-                  return res.json();
-                })["catch"](function (error) {
-                  return console.error('error: ' + error);
-                });
-
-              case 5:
-                response = _context3.sent;
-                console.log(response.message);
-
-              case 7:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3, this);
-      }));
-
-      function postRecipeImage(_x) {
-        return _postRecipeImage.apply(this, arguments);
-      }
-
-      return postRecipeImage;
-    }(),
-    postSend: function () {
-      var _postSend = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(data) {
-        var response;
-        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                _context4.next = 2;
-                return fetch('./api/recipe/create/image', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-Token': this.csrf
-                  },
-                  body: JSON.stringify(data)
-                }).then(function (res) {
-                  return res.json();
-                })["catch"](function (error) {
-                  return console.error('error: ' + error);
-                });
-
-              case 2:
-                response = _context4.sent;
-                // console.log(message)
-                // const message = await response.json()
-                console.log(response.message); // return response.message
-
-              case 4:
-              case "end":
-                return _context4.stop();
-            }
-          }
-        }, _callee4, this);
-      }));
-
-      function postSend(_x2) {
-        return _postSend.apply(this, arguments);
-      }
-
-      return postSend;
-    }(),
     buildForm: function buildForm() {
       var data = new FormData();
       data.append('title', this.title);
       data.append('description', this.description);
       data.append('directions', this.directions);
-      data.append('ingredients', this.getReqIngredients());
+      var ingredients = this.getReqIngredients();
+      console.log('ingredients: ' + JSON.stringify(ingredients));
+
+      for (var i = ingredients.length - 1; i >= 0; i--) {
+        console.log('adding ' + JSON.stringify(ingredients[i]));
+        data.append('ingredients[]', JSON.stringify(ingredients[i]));
+      }
 
       if (this.image) {
         data.append('image', this.image);
@@ -20143,7 +20048,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return data;
     },
     getReqIngredients: function getReqIngredients() {
+      // map ingredient ids with pivot table attributes
       return this.chosenIngredients.map(function (i) {
+        // set some default values
+        if (!i.qty) {
+          i.qty = 0;
+        }
+
+        if (!i.unit) {
+          i.unit = 'N/A';
+        }
+
         return {
           id: i.id,
           qty: i.qty,
@@ -20152,29 +20067,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       });
     },
     testRequest: function testRequest() {
-      var recipe = {
-        'title': this.title,
-        'description': this.description,
-        'image': this.image,
-        'directions': this.directions,
-        'ingredients': this.getReqIngredients()
-      }; // const recipe = this.buildForm()
-
-      console.log('test request: ', recipe.image);
-    },
-    alert: function (_alert) {
-      function alert() {
-        return _alert.apply(this, arguments);
-      }
-
-      alert.toString = function () {
-        return _alert.toString();
-      };
-
-      return alert;
-    }(function () {
-      alert('no json');
-    })
+      var recipe = this.buildForm();
+      console.log('test request: ', recipe.ingredients);
+      console.log('test request: ', JSON.stringify(recipe));
+    }
   },
   mounted: function mounted() {
     this.fetchIngredients(); // console.log('vm ingredients ' + app.pantryIngredients)
@@ -21335,8 +21231,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
       return $data.ingredient.name = $event;
     }),
-    "class": "input input-bordered input-primary",
-    value: "{{ searchText }}"
+    "class": "input input-bordered input-primary"
   }, null, 512
   /* NEED_PATCH */
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.ingredient.name]]), _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
@@ -21406,7 +21301,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8
     /* PROPS */
     , ["title", "info"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
-      type: "text",
+      type: "number",
       placeholder: "Qty",
       "onUpdate:modelValue": function onUpdateModelValue($event) {
         return ingredient.qty = $event;
@@ -21531,7 +21426,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onChange: $options.onChange
   }, null, 8
   /* PROPS */
-  , ["onChange"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <input type=\"file\" v-model=\"image\"> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ingredient_tray, {
+  , ["onChange"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ingredient_tray, {
     onIngredientToPantry: $options.ingredientToPantry,
     ingredients: $options.computedChosenIngredients
   }, null, 8
@@ -21557,8 +21452,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     "class": "btn btn-primary"
   }, "Submit Recipe"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    onClick: _cache[5] || (_cache[5] = function ($event) {
-      return $options.postRecipeImage(45);
+    onClick: _cache[5] || (_cache[5] = function () {
+      return $options.testRequest && $options.testRequest.apply($options, arguments);
     }),
     "class": "btn btn-primary"
   }, "Test"), $data.ingredientModal ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ingredient_modal, {
@@ -21862,7 +21757,7 @@ var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementV
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"flex flex-col items-center bg-gray-200 gap-1\">\r\n\t\t<h1 class=\"text-2xl\">{{ recipe.title }}</h1>\r\n\t\t<img :src=\"recipe.image\">\r\n\t\t<button>{{ buttonText }}</button>\r\n\r\n\t</div> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("figure", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
     src: $props.recipe.image,
-    alt: "Shoes",
+    alt: "",
     "class": "rounded-xl"
   }, null, 8
   /* PROPS */
